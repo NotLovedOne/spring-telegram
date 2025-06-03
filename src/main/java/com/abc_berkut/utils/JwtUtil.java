@@ -3,18 +3,22 @@ package com.abc_berkut.utils;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import java.nio.charset.StandardCharsets;
 
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final String jwtSecret = "SUPER_SECRET_KEY";
-    private final long jwtExpirationMs = 86400000; // 1 день
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+    @Value("${jwt.expiration:86400000}")
+    private long jwtExpirationMs; // 1 день
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(String username) {
